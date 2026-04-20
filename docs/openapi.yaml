@@ -1,0 +1,186 @@
+openapi: 3.0.3
+info:
+  title: Customers API
+  description: API REST para registro de usuarios (prueba técnica BCI).
+  version: 1.0.0
+  contact:
+    name: Customers API
+servers:
+  - url: http://localhost:8080
+    description: Desarrollo local
+
+paths:
+  /sign-up:
+    post:
+      tags: [Users]
+      summary: Registro de usuario
+      description: Crea un nuevo usuario con sus teléfonos. Retorna un JWT firmado.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+            examples:
+              ejemplo:
+                value:
+                  name: Juan Perez
+                  email: juan@bci.cl
+                  password: Abcdef12
+                  phones:
+                    - number: "1234567"
+                      citycode: "1"
+                      contrycode: "57"
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignUpResponse'
+        '400':
+          description: Request inválido (validaciones fallaron)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                mensaje: El formato del correo no es valido
+        '409':
+          description: Email ya registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                mensaje: El correo ya registrado
+
+  /me:
+    get:
+      tags: [Users]
+      summary: Datos del usuario autenticado
+      description: Retorna los datos del usuario correspondiente al JWT del header Authorization.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Datos del usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignUpResponse'
+        '401':
+          description: Token ausente o inválido
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                mensaje: Usuario no encontrado
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    SignUpRequest:
+      type: object
+      required: [name, email, password, phones]
+      properties:
+        name:
+          type: string
+          example: Juan Perez
+        email:
+          type: string
+          format: email
+          description: Email con formato válido (regex configurable).
+          example: juan@bci.cl
+        password:
+          type: string
+          description: Password con regex configurable (default 8+ chars, 1 mayúscula, 1 minúscula, 1 dígito).
+          example: Abcdef12
+        phones:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/PhoneRequest'
+
+    PhoneRequest:
+      type: object
+      required: [number, citycode, contrycode]
+      properties:
+        number:
+          type: string
+          example: "1234567"
+        citycode:
+          type: string
+          example: "1"
+        contrycode:
+          type: string
+          example: "57"
+
+    SignUpResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: b3c4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f
+        name:
+          type: string
+          example: Juan Perez
+        email:
+          type: string
+          example: juan@bci.cl
+        phones:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneResponse'
+        created:
+          type: string
+          format: date-time
+          example: 2026-04-19T14:30:12.345
+        modified:
+          type: string
+          format: date-time
+          example: 2026-04-19T14:30:12.345
+        last_login:
+          type: string
+          format: date-time
+          example: 2026-04-19T14:30:12.345
+        token:
+          type: string
+          description: JWT firmado (HS256).
+          example: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiM2M0...
+        isactive:
+          type: boolean
+          example: true
+
+    PhoneResponse:
+      type: object
+      properties:
+        number:
+          type: string
+          example: "1234567"
+        citycode:
+          type: string
+          example: "1"
+        contrycode:
+          type: string
+          example: "57"
+
+    ErrorResponse:
+      type: object
+      properties:
+        mensaje:
+          type: string
+          example: El correo ya registrado
+
+security:
+  - bearerAuth: []
