@@ -1,17 +1,17 @@
 package com.brr.customers.api.dto;
 
-import com.brr.customers.api.domain.Phone;
+import com.brr.customers.api.validation.ValidEmail;
+import com.brr.customers.api.validation.ValidPassword;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 
 import java.util.List;
 
 public record SignUpRequest(
         @NotBlank String name,
-        @NotBlank String email,
-        @NotBlank  @Pattern(regexp = "${app.password.regex}") String password,
-        @NotEmpty @Valid List <Phone> phones
+        @NotBlank @ValidEmail String email,
+        @NotBlank @ValidPassword String password,
+        @NotEmpty @Valid List<PhoneRequest> phones
 ) {
 }
