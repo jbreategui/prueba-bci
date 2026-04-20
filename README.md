@@ -2,6 +2,14 @@
 
 API REST para registro de usuarios. Solución a la prueba técnica **Evaluación JAVA - Especialista Integración BCI**.
 
+## Documentación adicional
+
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) — diagramas de arquitectura (Container, Componentes, Secuencia) y decisiones de diseño.
+- [`schema.sql`](schema.sql) — script de creación de tablas (`users` y `phones`).
+- [`docs/openapi.yaml`](docs/openapi.yaml) — especificación OpenAPI 3.0 de los endpoints. Se puede visualizar en [editor.swagger.io](https://editor.swagger.io) o importar a Postman.
+- [`docs/diagrams/`](docs/diagrams/) — archivos fuente de los diagramas (`.drawio`) e imágenes exportadas (`.png`).
+- **Swagger UI** (en ejecución): [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
 ## Stack
 
 - Java 21

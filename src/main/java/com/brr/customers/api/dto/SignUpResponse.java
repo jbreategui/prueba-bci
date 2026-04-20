@@ -1,5 +1,6 @@
 package com.brr.customers.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
@@ -11,9 +12,13 @@ public record SignUpResponse(
         String name,
         String email,
         List<PhoneResponse> phones,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime created,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime modified,
-        @JsonProperty("last_login") LocalDateTime lastLogin,
+        @JsonProperty("last_login")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        LocalDateTime lastLogin,
         String token,
         @JsonProperty("isactive") boolean isActive
 ) {
